@@ -64,5 +64,8 @@ main      (local)      =========-@@@-##  (me)
 my_branch (local)      #########-@@@-##
 my_branch (server)     #########-@@@-##
 
+git fetch
+// untuk menarik branch baru dari repo server
+
 
 
