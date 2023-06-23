@@ -13,7 +13,7 @@ main (server)          XXXXXXXXX
 main (local)           =========
 my_branch (local)      ######### (me)
 
-*4. melakukan pekerjaan di branch kita*
+*4. melakukan pekerjaan di branch kita, other branch MR ke main (server)*
 other_branch           @@@@@@@@@-@@@
 main (server)          XXXXXXXXX-@@@
 main (local)           =========
