@@ -1,0 +1,9 @@
+name: learnDart
+description: A description of your project
+version: 1.0.0
+# Additional fields and configuration can be added here
+
+environment:
+  sdk: ">=2.12.0 <3.0.0"
+dependencies:
+  characters: ^1.3.0
