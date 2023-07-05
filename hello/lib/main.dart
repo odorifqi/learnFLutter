@@ -28,6 +28,7 @@ class MyApp extends StatelessWidget {
 class MyAppState extends ChangeNotifier {
   var current = WordPair.random();
   var fav = <WordPair>[];
+  var isExpanded = false;
 
   void getNext() {
     current = WordPair.random();
@@ -42,33 +43,56 @@ class MyAppState extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  void toggleExpand() {
+    if (isExpanded) {
+      isExpanded = false;
+    } else {
+      isExpanded = true;
+    }
+    notifyListeners();
+  }
 }
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
+    var appState = context.watch<MyAppState>();
     return Scaffold(
       body: Row(
         children: [
-          Expanded(
-            child: NavigationRail(
-              extended: true,
-              minExtendedWidth: 180,
-              destinations: [
-                NavigationRailDestination(
-                  icon: Icon(Icons.home),
-                  label: Text('Home'),
-                ),
-                NavigationRailDestination(
-                  icon: Icon(Icons.favorite),
-                  label: Text('Favorites'),
-                ),
-              ],
-              selectedIndex: 0,
-              onDestinationSelected: (value) {
-                print('selected: $value');
-              },
-            ),
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ElevatedButton(
+                  onPressed: () {
+                    appState.toggleExpand();
+                    print(appState.isExpanded);
+                  },
+                  child: Text('expand')),
+              NavigationRail(
+                extended: appState.isExpanded,
+                destinations: [
+                  NavigationRailDestination(
+                    icon: Icon(Icons.home),
+                    label: Text('Home'),
+                  ),
+                  NavigationRailDestination(
+                    icon: Icon(Icons.favorite),
+                    label: Text('Favorites'),
+                  ),
+                ],
+                selectedIndex: 1,
+                onDestinationSelected: (value) {
+                  print('selected: $value');
+                },
+              ),
+            ],
           ),
           Expanded(
             child: Container(
