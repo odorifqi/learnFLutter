@@ -29,6 +29,7 @@ class MyApp extends StatelessWidget {
 class MyAppState extends ChangeNotifier {
   var current = WordPair.random();
   var fav = <WordPair>[];
+  var isExpanded = false;
 
   void getNext() {
     current = WordPair.random();
@@ -43,6 +44,15 @@ class MyAppState extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  void toggleExpand() {
+    if (isExpanded) {
+      isExpanded = false;
+    } else {
+      isExpanded = true;
+    }
+    notifyListeners();
+  }
 }
 
 class MyHomePage extends StatefulWidget {
@@ -51,29 +61,23 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  var selectedIndex = 0;
-
   @override
   Widget build(BuildContext context) {
-    Widget page;
-    switch (selectedIndex) {
-      case 0:
-        page = GeneratorPage();
-        break;
-      case 1:
-        page = Placeholder();
-        break;
-      default:
-        throw UnimplementedError('no widget for $selectedIndex');
-    }
-
-    return LayoutBuilder(builder: (context, constraints) {
-      return Scaffold(
-        body: Row(
-          children: [
-            SafeArea(
-              child: NavigationRail(
-                extended: constraints.maxWidth >= 600,
+    var appState = context.watch<MyAppState>();
+    return Scaffold(
+      body: Row(
+        children: [
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ElevatedButton(
+                  onPressed: () {
+                    appState.toggleExpand();
+                    print(appState.isExpanded);
+                  },
+                  child: Text('expand')),
+              NavigationRail(
+                extended: appState.isExpanded,
                 destinations: [
                   NavigationRailDestination(
                     icon: Icon(Icons.home),
@@ -84,24 +88,22 @@ class _MyHomePageState extends State<MyHomePage> {
                     label: Text('Favorites'),
                   ),
                 ],
-                selectedIndex: selectedIndex,
+                selectedIndex: 1,
                 onDestinationSelected: (value) {
-                  setState(() {
-                    selectedIndex = value;
-                  });
+                  print('selected: $value');
                 },
               ),
+            ],
+          ),
+          Expanded(
+            child: Container(
+              color: Theme.of(context).colorScheme.primaryContainer,
+              child: GeneratorPage(),
             ),
-            Expanded(
-              child: Container(
-                color: Theme.of(context).colorScheme.primaryContainer,
-                child: page,
-              ),
-            ),
-          ],
-        ),
-      );
-    });
+          ),
+        ],
+      ),
+    );
   }
 }
 
