@@ -55,45 +55,36 @@ class MyAppState extends ChangeNotifier {
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
+class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
     return Scaffold(
       body: Row(
         children: [
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ElevatedButton(
-                  onPressed: () {
-                    appState.toggleExpand();
-                    print(appState.isExpanded);
-                  },
-                  child: Text('expand')),
-              NavigationRail(
-                extended: appState.isExpanded,
-                destinations: [
-                  NavigationRailDestination(
-                    icon: Icon(Icons.home),
-                    label: Text('Home'),
-                  ),
-                  NavigationRailDestination(
-                    icon: Icon(Icons.favorite),
-                    label: Text('Favorites'),
-                  ),
-                ],
-                selectedIndex: 1,
-                onDestinationSelected: (value) {
-                  print('selected: $value');
-                },
+          // wrap with column
+          ElevatedButton(
+              onPressed: () {
+                appState.toggleExpand();
+                print(appState.isExpanded);
+              },
+              child: Text('expand')),
+          NavigationRail(
+            extended: appState.isExpanded,
+            destinations: [
+              NavigationRailDestination(
+                icon: Icon(Icons.home),
+                label: Text('Home'),
+              ),
+              NavigationRailDestination(
+                icon: Icon(Icons.favorite),
+                label: Text('Favorites'),
               ),
             ],
+            selectedIndex: 1,
+            onDestinationSelected: (value) {
+              print('selected: $value');
+            },
           ),
           Expanded(
             child: Container(
