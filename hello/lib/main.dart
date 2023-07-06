@@ -29,7 +29,6 @@ class MyApp extends StatelessWidget {
 class MyAppState extends ChangeNotifier {
   var current = WordPair.random();
   var fav = <WordPair>[];
-  var isExpanded = false;
 
   void getNext() {
     current = WordPair.random();
@@ -41,15 +40,6 @@ class MyAppState extends ChangeNotifier {
       fav.remove(current);
     } else {
       fav.add(current);
-    }
-    notifyListeners();
-  }
-
-  void toggleExpand() {
-    if (isExpanded) {
-      isExpanded = false;
-    } else {
-      isExpanded = true;
     }
     notifyListeners();
   }
@@ -75,22 +65,13 @@ class _MyHomePageState extends State<MyHomePage> {
       default:
         throw UnimplementedError('no widget for $selectedIndex');
     }
-    var appState = context.watch<MyAppState>();
+
     return LayoutBuilder(builder: (context, constraints) {
       return Scaffold(
         body: Row(
           children: [
-            // wrap with column
-            ElevatedButton(
-                onPressed: () {
-                  appState.toggleExpand();
-                  print(appState.isExpanded);
-                },
-                child: Text('expand')),
             NavigationRail(
-              // extended: appState.isExpanded,
-              extended:
-                  constraints.maxWidth >= 600 ? true : appState.isExpanded,
+              extended: constraints.maxWidth >= 600,
               destinations: [
                 NavigationRailDestination(
                   icon: Icon(Icons.home),
