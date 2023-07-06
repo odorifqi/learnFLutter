@@ -55,46 +55,67 @@ class MyAppState extends ChangeNotifier {
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  var selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
+    Widget page;
+    switch (selectedIndex) {
+      case 0:
+        page = GeneratorPage();
+        break;
+      case 1:
+        page = Placeholder();
+        break;
+      default:
+        throw UnimplementedError('no widget for $selectedIndex');
+    }
     var appState = context.watch<MyAppState>();
-    return Scaffold(
-      body: Row(
-        children: [
-          // wrap with column
-          ElevatedButton(
-              onPressed: () {
-                appState.toggleExpand();
-                print(appState.isExpanded);
+    return LayoutBuilder(builder: (context, constraints) {
+      return Scaffold(
+        body: Row(
+          children: [
+            // wrap with column
+            ElevatedButton(
+                onPressed: () {
+                  appState.toggleExpand();
+                  print(appState.isExpanded);
+                },
+                child: Text('expand')),
+            NavigationRail(
+              extended: appState.isExpanded,
+              destinations: [
+                NavigationRailDestination(
+                  icon: Icon(Icons.home),
+                  label: Text('Home'),
+                ),
+                NavigationRailDestination(
+                  icon: Icon(Icons.favorite),
+                  label: Text('Favorites'),
+                ),
+              ],
+              selectedIndex: selectedIndex,
+              onDestinationSelected: (value) {
+                setState(() {
+                  selectedIndex = value;
+                });
               },
-              child: Text('expand')),
-          NavigationRail(
-            extended: appState.isExpanded,
-            destinations: [
-              NavigationRailDestination(
-                icon: Icon(Icons.home),
-                label: Text('Home'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(Icons.favorite),
-                label: Text('Favorites'),
-              ),
-            ],
-            selectedIndex: 1,
-            onDestinationSelected: (value) {
-              print('selected: $value');
-            },
-          ),
-          Expanded(
-            child: Container(
-              color: Theme.of(context).colorScheme.primaryContainer,
-              child: GeneratorPage(),
             ),
-          ),
-        ],
-      ),
-    );
+            Expanded(
+              child: Container(
+                color: Theme.of(context).colorScheme.primaryContainer,
+                child: page,
+              ),
+            ),
+          ],
+        ),
+      );
+    });
   }
 }
 
