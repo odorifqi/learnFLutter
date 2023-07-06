@@ -88,7 +88,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
                 child: Text('expand')),
             NavigationRail(
-              extended: appState.isExpanded,
+              // extended: appState.isExpanded,
+              extended:
+                  constraints.maxWidth >= 600 ? true : appState.isExpanded,
               destinations: [
                 NavigationRailDestination(
                   icon: Icon(Icons.home),
