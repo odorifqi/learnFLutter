@@ -38,8 +38,10 @@ class MyAppState extends ChangeNotifier {
   void toggleFav() {
     if (fav.contains(current)) {
       fav.remove(current);
+      print(fav);
     } else {
       fav.add(current);
+      print(fav);
     }
     notifyListeners();
   }
@@ -60,7 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
         page = GeneratorPage();
         break;
       case 1:
-        page = Placeholder();
+        page = FavPage();
         break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
@@ -171,6 +173,25 @@ class BigCard extends StatelessWidget {
           style: style,
           semanticsLabel: "${pair.first} ${pair.second}",
         ),
+      ),
+    );
+  }
+}
+
+class FavPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    var appState = context.watch<MyAppState>();
+    return Center(
+      child: Column(
+        children: [
+          Text("Message:"),
+          for (var msg in appState.fav)
+            ListTile(
+              leading: Icon(Icons.favorite),
+              title: Text(msg.asLowerCase),
+            )
+        ],
       ),
     );
   }
