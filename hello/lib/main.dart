@@ -45,6 +45,11 @@ class MyAppState extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  void unlikeWord(WordPair pair) {
+    fav.remove(pair);
+    notifyListeners();
+  }
 }
 
 class MyHomePage extends StatefulWidget {
@@ -188,9 +193,13 @@ class FavPage extends StatelessWidget {
           Text("Message:"),
           for (var msg in appState.fav)
             ListTile(
-              leading: Icon(Icons.favorite),
-              title: Text(msg.asLowerCase),
-            )
+                leading: Icon(Icons.favorite),
+                title: Text(msg.asLowerCase),
+                trailing: IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () {
+                      appState.unlikeWord(msg);
+                    }))
         ],
       ),
     );
