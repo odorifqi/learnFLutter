@@ -199,22 +199,30 @@ class FavPage extends StatelessWidget {
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
     var favWord = appState.fav;
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Text("Message:"),
-        ),
-        for (var msg in favWord)
-          ListTile(
+
+    Widget favContent;
+    if (favWord.isEmpty) {
+      favContent = Center(child: Text("No favorites yet."));
+    } else {
+      favContent =
+          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text("Your favorite words:"),
+        ...favWord.map((msg) {
+          return ListTile(
               leading: Icon(Icons.favorite),
               title: Text(msg.asLowerCase),
               trailing: IconButton(
                   icon: Icon(Icons.delete),
                   onPressed: () {
                     appState.unlikeWord(msg);
-                  }))
-      ],
+                  }));
+        }).toList(),
+      ]);
+    }
+
+    return Padding(
+      padding: const EdgeInsets.all(12.0),
+      child: favContent,
     );
   }
 }
