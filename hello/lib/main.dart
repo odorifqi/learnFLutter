@@ -114,41 +114,52 @@ class GeneratorPage extends StatelessWidget {
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
     var pair = appState.current;
+    var favWord = appState.fav;
 
     IconData icon;
-    if (appState.fav.contains(pair)) {
+    if (favWord.contains(pair)) {
       icon = Icons.favorite;
     } else {
       icon = Icons.favorite_border;
     }
 
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          BigCard(pair: pair),
-          SizedBox(height: 10),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ElevatedButton.icon(
-                onPressed: () {
-                  appState.toggleFav();
-                },
-                icon: Icon(icon),
-                label: Text('Like'),
-              ),
-              SizedBox(width: 10),
-              ElevatedButton(
-                onPressed: () {
-                  appState.getNext();
-                },
-                child: Text('Next'),
-              ),
-            ],
-          ),
-        ],
-      ),
+    void likeInfo(BuildContext context) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: favWord.contains(pair)
+              ? Text('liked: $pair')
+              : Text('unliked: $pair'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        BigCard(pair: pair),
+        SizedBox(height: 10),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ElevatedButton.icon(
+              onPressed: () {
+                appState.toggleFav();
+                likeInfo(context);
+              },
+              icon: Icon(icon),
+              label: Text('Like'),
+            ),
+            SizedBox(width: 10),
+            ElevatedButton(
+              onPressed: () {
+                appState.getNext();
+              },
+              child: Text('Next'),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
@@ -187,21 +198,23 @@ class FavPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
-    return Center(
-      child: Column(
-        children: [
-          Text("Message:"),
-          for (var msg in appState.fav)
-            ListTile(
-                leading: Icon(Icons.favorite),
-                title: Text(msg.asLowerCase),
-                trailing: IconButton(
-                    icon: Icon(Icons.delete),
-                    onPressed: () {
-                      appState.unlikeWord(msg);
-                    }))
-        ],
-      ),
+    var favWord = appState.fav;
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Text("Message:"),
+        ),
+        for (var msg in favWord)
+          ListTile(
+              leading: Icon(Icons.favorite),
+              title: Text(msg.asLowerCase),
+              trailing: IconButton(
+                  icon: Icon(Icons.delete),
+                  onPressed: () {
+                    appState.unlikeWord(msg);
+                  }))
+      ],
     );
   }
 }
